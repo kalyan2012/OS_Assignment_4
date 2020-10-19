@@ -4,7 +4,6 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <string.h>
-#include <semaphore.h>
 int n, m, o, Roaming;
 pthread_mutex_t mutex[1000], mutex_company[1000];
 int array[1000];
