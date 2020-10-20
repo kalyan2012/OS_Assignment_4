@@ -27,7 +27,6 @@ int min(int a, int b, int c)
 }
 int random(int low, int high)
 {
-	// Both bounds inclusive
 	return (low+rand()%(high - low + 1));
 }
 void *c_func(), *v_func(), *s_func();
@@ -170,7 +169,6 @@ void *s_func(void *a)
 {
 	int z = *(int *)a;
 	int rndm = random(5, 10);
-	//printf("Roaming by student %d for time %d\n", z, rndm);
 	sleep(rndm);
 	o++;
 	while(Student[z].round_no < 3)
@@ -183,13 +181,11 @@ void *s_func(void *a)
 		while(1)
 		{
 			zone_allotted = random(0, m-1);
-			//printf("before of mutex lock by %d\n", z);
 			pthread_mutex_lock(&(mutex[zone_allotted]));
 			if(!Zone[zone_allotted].in_vacc && Zone[zone_allotted].no_of_st!=Zone[zone_allotted].slots)
 			{
 				Zone[zone_allotted].no_of_st++;
 				o--;
-			//	printf("In lock by %d\n", z);
 				Zone[zone_allotted].queue[Zone[zone_allotted].no_of_st-1] = Student[z].id;	
 				Student[z].round_no++;
 				if(Student[z].round_no == 1)
@@ -204,7 +200,6 @@ void *s_func(void *a)
 			}
 			else
 				pthread_mutex_unlock(&(mutex[zone_allotted]));
-			//printf("after of lock %d\n",z );
 		}
 		sleep(2);
 		while(Student[z].is_cured == -1);
@@ -225,5 +220,4 @@ void *s_func(void *a)
 			break;
 		}
 	}
-	//printf("Student %d\n", z);
 }

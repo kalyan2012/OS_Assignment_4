@@ -30,7 +30,6 @@ void *ac_time_singer(void *z), *el_time_singer(void *z);
 int random_integer(int x, int y)
 {
     int z = x+(rand()%(y-x+1));
-    //printf("%d %d %din rand\n",x, y, z);
     return z;
 }
 void *ac_time(void *z)
@@ -42,22 +41,18 @@ void *ac_time(void *z)
     tm.tv_sec+=t;
     int zooo;
     sem_getvalue(&acoustic, &zooo);
-//    printf("%d sdsd %s\n", zooo, per[l].name);
     int ret_val = sem_timedwait(&acoustic, &tm);
     if(per[l].stage_type != -1) {
         sem_post(&electric);
         return NULL;
     }
     sem_getvalue(&acoustic, &zooo);
-  //  printf("%d sdsd %s\n", zooo, per[l].name);
-   // printf("%d ret %s\n", ret_val, per[l].name);
     pthread_mutex_lock(&zone[l]);
     if(ret_val == -1)
     {
         if(check_exit_first[l] == -1) {
             check_exit_first[l] = 0;
             check_first[l] = 2;
-    //        printf("%s iwbiwe\n", per[l].name);
             printf("\033[1;35m%s %c left because of impatience\033[0m\n", per[l].name, per[l].instrument);
             pthread_mutex_unlock(&zone[l]);
             return NULL;
@@ -72,11 +67,9 @@ void *ac_time(void *z)
         per[l].stage_type = 0;
         for(int i=0;i<a;i++)
         {
-      //      printf("before lock %s\n", per[l].name);
             pthread_mutex_lock(&st[i].lock);
             if(st[i].cur_per == 0)
             {
-        //        printf("%s name\n", per[l].name);
                 st[i].cur_type[0] = l;
                 per[l].stage_id = i;
                 st[i].cur_per = 1;
@@ -85,18 +78,15 @@ void *ac_time(void *z)
             }
             else
                 pthread_mutex_unlock(&st[i].lock);
-          //  printf("%s outside\n", per[l].name);
         }
-      //  printf("t1 %d t2 %d\n",t1, t2);
         int random_time = random_integer(t1, t2);
-       // printf("%d for %s\n",random_time,per[l].name);
         per[l].perf_time = random_time;
         printf("\033[1;51m%s performing %c at acoustic stage for %d\033[0m\n",per[l].name, per[l].instrument, per[l].perf_time);
         sleep(per[l].perf_time);
         if(st[per[l].stage_id].cur_per == 2) {
             sleep(2);
-            printf("\033[1;34m%s performance at electric stage finished\033[0m\n", per[l].name);
-            printf("\033[1;34m%s performance at electric stage finished\033[0m\n", per[l].name);
+            printf("\033[1;34m%s performance at acoustic stage finished\033[0m\n", per[l].name);
+            printf("\033[1;34m%s performance at acoustic stage finished\033[0m\n", per[st[per[l].stage_id].cur_type[1]].name);
             st[per[l].stage_id].cur_per = 0;
             st[per[l].stage_id].cur_type[0] = -1;
             st[per[l].stage_id].cur_type[1] = -1;
@@ -120,15 +110,12 @@ void *el_time(void *z)
     tm.tv_sec+=t;
     int zooo;
     sem_getvalue(&electric, &zooo);
-   // printf("%d sdsd %s\n", zooo, per[l].name);
     int ret_val = sem_timedwait(&electric, &tm);
     if(per[l].stage_type != -1) {
         sem_post(&electric);
         return NULL;
     }
     sem_getvalue(&electric, &zooo);
-   // printf("%d sdsd %s\n", zooo, per[l].name);
-   // printf("%d ret %s\n", ret_val, per[l].name);
     pthread_mutex_lock(&zone[l]);
     if(ret_val == -1)
     {
@@ -140,13 +127,11 @@ void *el_time(void *z)
             return NULL;
         }
         pthread_mutex_unlock(&zone[l]);
-        //printf("inininini\n");
         return NULL;
     }
     if(check_first[l] == -1)
     {
         check_first[l] = 2;
-        //printf("frgvdehbsnfhug\n");
         per[l].stage_type = 1;
         for(int i=a;i<a+e;i++)
         {
@@ -163,14 +148,13 @@ void *el_time(void *z)
                 pthread_mutex_unlock(&st[i].lock);
         }
         int random_time = random_integer(t1, t2);
-       // printf("%d for %s\n",random_time,per[l].name);
         per[l].perf_time = random_time;
         printf("\033[1;57m%s performing %c at electric stage for %d\033[0m\n",per[l].name, per[l].instrument, per[l].perf_time);
         sleep(per[l].perf_time);
         if(st[per[l].stage_id].cur_per == 2) {
             sleep(2);
             printf("\033[1;34m%s performance at electric stage finished\033[0m\n", per[l].name);
-            printf("\033[1;34m%s performance at electric stage finished\033[0m\n", per[l].name);
+            printf("\033[1;34m%s performance at electric stage finished\033[0m\n", per[st[per[l].stage_id].cur_type[1]].name);
             st[per[l].stage_id].cur_per = 0;
             st[per[l].stage_id].cur_type[0] = -1;
             st[per[l].stage_id].cur_type[1] = -1;
@@ -224,8 +208,8 @@ void *performance(void *z)
         sleep(per[l].perf_time);
         if(st[per[l].stage_id].cur_per == 2) {
             sleep(2);
-            printf("\033[1;34m%s performance at electric stage finished\033[0m\n", per[l].name);
-            printf("\033[1;34m%s performance at electric stage finished\033[0m\n", per[l].name);
+            printf("\033[1;34m%s performance at acoustic stage finished\033[0m\n", per[l].name);
+            printf("\033[1;34m%s performance at acoustic stage finished\033[0m\n", per[st[per[l].stage_id].cur_type[1]].name);
             st[per[l].stage_id].cur_per = 0;
             st[per[l].stage_id].cur_type[0] = -1;
             st[per[l].stage_id].cur_type[1] = -1;
@@ -271,7 +255,7 @@ void *performance(void *z)
         if(st[per[l].stage_id].cur_per == 2) {
             sleep(2);
             printf("\033[1;34m%s performance at electric stage finished\033[0m\n", per[l].name);
-            printf("\033[1;34m%s performance at electric stage finished\033[0m\n", per[l].name);
+            printf("\033[1;34m%s performance at electric stage finished\033[0m\n", per[st[per[l].stage_id].cur_type[1]].name);
             st[per[l].stage_id].cur_per = 0;
             st[per[l].stage_id].cur_type[0] = -1;
             st[per[l].stage_id].cur_type[1] = -1;
@@ -296,11 +280,8 @@ void *performance(void *z)
     {
         int inside = 0, join = 0;
         for(int i=0;i<a+e;i++) {
-          //  printf("%s is here\n",per[l].name);
             pthread_mutex_lock(&st[i].lock);
-          //  printf("%s %d here %s\n",per[st[i].cur_type[0]].name,st[i].cur_per,per[l].name);
             if (st[i].cur_per == 0) {
-            //    printf("%d ghjhg\n",i);
                 inside = 1;
                 per[l].stage_id = i;
                 per[l].stage_type = 1*(i >= a);
@@ -344,16 +325,8 @@ void *performance(void *z)
                     else
                         printf("\033[1;34m%s joined %s's performance on %d, performance extended for 2 sec on electric\033[0m\n",per[l].name, per[st[i].cur_type[0]].name,i);
                     sleep(per[l].perf_time);
-                /*    if(per[l].stage_type == 0)
-                        printf("\033[1;34m%s performance at acoustic stage finished\033[0m\n",per[l].name);
-                    else
-                        printf("\033[1;34m%s performance at electric stage finished\033[0m\n",per[l].name);
-                    break;
-                    */
+		    return NULL;
                 }
-                //st[per[l].stage_id].cur_per--;
-                //st[per[l].stage_id].cur_type[1] = -1;
-                //pthread_mutex_unlock(&st[i].lock);
             }
             if (!join) {
                 pthread_t ac, el;
@@ -377,7 +350,6 @@ int main()
 {
     srand(time(0));
     scanf("%d %d %d %d %d %d %d", &k, &a, &e, &c, &t1, &t2, &t);
-    //printf("%d %d %d %d %d %d %d\n",k,a,e,c,t1,t2,t);
     sem_init(&acoustic, 0, a);
     sem_init(&electric, 0, e);
     sem_init(&tshirts, 0, c);
@@ -403,6 +375,14 @@ int main()
         pthread_create(&performer_thread[i], NULL, performance, &(per[i].id));
     for(int i=0;i<k;i++)
         pthread_join(performer_thread[i], NULL);
+    for(int i=0; i<100;i++)
+    {
+	pthread_mutex_destroy(&zone[i]);
+	pthread_mutex_destroy(&zone_singer[i]);
+    }
+    sem_destroy(&acoustic);
+    sem_destroy(&electric);
+    sem_destroy(&tshirts);
     printf("\n\033[1;31mFinished\n\033[0m");
 }
 void *ac_time_singer(void *z)
