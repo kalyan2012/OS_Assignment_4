@@ -39,40 +39,40 @@ void selection_sort(int arr[], int l, int r)
 }
 void merge (int *arr, int low, int mid, int high)
 {
-		int size1 = mid - low + 1;
-		int size2 = high - mid;
-		int L[size1], R[size2];
-		for (int j = 0; j < size1; j++)
-			L[j] = arr[low + j];
-		for (int j = 0; j < size2; j++)
-			R[j] = arr[mid + j + 1];
-		int i = 0, j = 0, k = low;
-		while (i < size1 && j < size2) 
-		{
-			if (L[i] <= R[j]) 
-			{
-				arr[k] = L[i];
-				i++;
-			} 
-			else 
-			{
-				arr[k] = R[j];
-				j++;
-			}
-			k++;
-		}
-		while (i < size1) 
+	int size1 = mid - low + 1;
+	int size2 = high - mid;
+	int L[size1], R[size2];
+	for (int j = 0; j < size1; j++)
+		L[j] = arr[low + j];
+	for (int j = 0; j < size2; j++)
+		R[j] = arr[mid + j + 1];
+	int i = 0, j = 0, k = low;
+	while (i < size1 && j < size2) 
+	{
+		if (L[i] <= R[j]) 
 		{
 			arr[k] = L[i];
 			i++;
-			k++;
-		}
-		while (j < size2) 
+		} 
+		else 
 		{
 			arr[k] = R[j];
 			j++;
-			k++;
 		}
+		k++;
+	}
+	while (i < size1) 
+	{
+		arr[k] = L[i];
+		i++;
+		k++;
+	}
+	while (j < size2) 
+	{
+		arr[k] = R[j];
+		j++;
+		k++;
+	}
 }
 void normal_mergesort(int *arr, int low, int high)
 {

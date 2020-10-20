@@ -82,9 +82,9 @@ int main()
 		pthread_join(student_thread[i], NULL);
 	for(int i=0;i<m;i++)
 	{
-        pthread_mutex_destroy(&mutex[i]);
-        pthread_mutex_destroy(&mutex_company[i]);
-    }
+		pthread_mutex_destroy(&mutex[i]);
+		pthread_mutex_destroy(&mutex_company[i]);
+	}
 	printf("\n\033[1;31mSimluation Over\033[0m\n");
 	return 0;
 }
@@ -174,7 +174,7 @@ void *s_func(void *a)
 	while(Student[z].round_no < 3)
 	{
 		for(int i=0;i<m;i++)
-	    	while(!Zone[i].vaccine_left);
+			while(!Zone[i].vaccine_left);
 		sleep(1);
 		printf("\033[1;31mStudent %d is waiting to be allocated a slot on a Vaccination Zone\033[0m\n", z);
 		int zone_allotted;
