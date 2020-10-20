@@ -172,7 +172,7 @@ void runSorts(int n)
 	}
 	printf("\n");
 	//For forked mergesort
-	printf("Running concurrent_mergesort for n = %d\n", n);
+	printf("\033[1;34mRunning concurrent_mergesort for n = %d\033[1;33m\n", n);
 	clock_gettime(CLOCK_MONOTONIC_RAW, &ts);
 	long double st = ts.tv_nsec/(1e9)+ts.tv_sec;
 	mergesort(arr, 0, n-1);
@@ -181,7 +181,7 @@ void runSorts(int n)
 	printf("\n");
 	clock_gettime(CLOCK_MONOTONIC_RAW, &ts);
 	long double en = ts.tv_nsec/(1e9)+ts.tv_sec;
-	printf("time = %Lf\n\n", en - st);
+	printf("\033[1;32mtime = %Lf\n\n", en - st);
 	long double t1 = en-st;
 	// For threaded mergesort
 	pthread_t tid;
@@ -189,7 +189,7 @@ void runSorts(int n)
 	a.l = 0;
 	a.r = n-1;
 	a.arr = brr;
-	printf("Running threaded_concurrent_mergesort for n = %d\n", n);
+	printf("\033[1;34mRunning threaded_concurrent_mergesort for n = %d\033[1;33m\n", n);
 	clock_gettime(CLOCK_MONOTONIC_RAW, &ts);
 	st = ts.tv_nsec/(1e9)+ts.tv_sec;
 	pthread_create(&tid, NULL, threaded_mergesort, &a);
@@ -199,10 +199,10 @@ void runSorts(int n)
 	printf("\n");
 	clock_gettime(CLOCK_MONOTONIC_RAW, &ts);
 	en = ts.tv_nsec/(1e9)+ts.tv_sec;
-	printf("time = %Lf\n\n", en - st);
+	printf("\033[1;32mtime = %Lf\n\n", en - st);
 	long double t2 = en-st;
 	// Normalmergesort
-	printf("Running normal_mergesort for n = %d\n", n);
+	printf("\033[1;34mRunning normal_mergesort for n = %d\033[1;33m\n", n);
 	clock_gettime(CLOCK_MONOTONIC_RAW, &ts);
 	st = ts.tv_nsec/(1e9)+ts.tv_sec;
 	normal_mergesort(brr1, 0, n-1);
@@ -211,9 +211,9 @@ void runSorts(int n)
 	printf("\n");
 	clock_gettime(CLOCK_MONOTONIC_RAW, &ts);
 	en = ts.tv_nsec/(1e9)+ts.tv_sec;
-	printf("time = %Lf\n\n", en - st);
+	printf("\033[1;32mtime = %Lf\n\n", en - st);
 	long double t3 = en - st;
-	printf("normal_mergesort ran:\n\t[ %Lf ] times faster than concurrent_mergesort\n\t[ %Lf ] times faster than threaded_concurrent_mergesort\n\n", t1/t3, t2/t3);
+	printf("\033[1;35mnormal_mergesort ran:\n\t\033[1;36m[ %Lf ] times faster than concurrent_mergesort\n\t\033[1;37m[ %Lf ] times faster than threaded_concurrent_mergesort\033[0m\n\n", t1/t3, t2/t3);
 	shmdt(arr);
 }
 int main()
